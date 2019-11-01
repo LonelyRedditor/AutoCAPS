@@ -1,6 +1,7 @@
 #Python libraries that we need to import for our bot
 import random
-from flask import Flask, requestimport sys
+from flask import Flask, request
+import sys
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import requests
