@@ -24,13 +24,11 @@ from email.mime.image import MIMEImage
 import os 
 app = Flask(__name__)
 
-CHR = os.environ["CHR"]
-sys.path.insert(0,CHR)
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--headless')
+chrome_options = Options()
+chrome_options.binary_location = GOOGLE_CHROME_BIN
+chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--disable-dev-shm-usage')
-browser = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
+browser = webdriver.Chrome(executable_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
 
 
 PASS = os.environ["PASS"]
