@@ -4,8 +4,6 @@ gunicorn==19.9.0
 selenium
 bs4
 requests
-time
 smtplib
-datetime
 email
 csv
