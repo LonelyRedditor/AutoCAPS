@@ -10,51 +10,146 @@ bot = Bot (ACCESS_TOKEN)
 
 #We will receive messages that Facebook sends our bot at this endpoint 
 @app.route("/", methods=['GET', 'POST'])
-def receive_message():
-    if request.method == 'GET':
-        """Before allowing people to message your bot, Facebook has implemented a verify token
-        that confirms all requests that your bot receives came from Facebook.""" 
-        token_sent = request.args.get("hub.verify_token")
-        return verify_fb_token(token_sent)
-    #if the request was not get, it must be POST and we can just proceed with sending a message back to user
-    else:
-        # get whatever message a user sent the bot
-       output = request.get_json()
-       for event in output['entry']:
-          messaging = event['messaging']
-          for message in messaging:
-            if message.get('message'):
-                #Facebook Messenger ID for user so we know where to send response back to
-                recipient_id = message['sender']['id']
-                if message['message'].get('text'):
-                    response_sent_text = get_message()
-                    send_message(recipient_id, response_sent_text)
-                #if user sends us a GIF, photo,video, or any other non-text item
-                if message['message'].get('attachments'):
-                    response_sent_nontext = get_message()
-                    send_message(recipient_id, response_sent_nontext)
-    return "Message Processed"
-
-
-def verify_fb_token(token_sent):
-    #take token sent by facebook and verify it matches the verify token you sent
-    #if they match, allow the request, else return an error 
-    if token_sent == VERIFY_TOKEN:
-        return request.args.get("hub.challenge")
-    return 'Invalid verification token'
-
-
-#chooses a random message to send to the user
-def get_message():
-    sample_responses = ["You are stunning!", "We're proud of you.", "Keep on being you!", "We're greatful to know you :)"]
-    # return selected item to the user
-    return random.choice(sample_responses)
-
-#uses PyMessenger to send response to user
-def send_message(recipient_id, response):
-    #sends user the text message provided via input response parameter
-    bot.send_text_message(recipient_id, response)
-    return "success"
-
-if __name__ == "__main__":
-    app.run()
+def app():
+    results_url = "https://www.jamb.org.ng/efacility_/Login"
+    browser.get(results_url)
+    user = browser.find_element_by_id("email")
+    user.send_keys("oluwashaeyhoon@gmail.com")
+    pas = browser.find_element_by_id("password")
+    pas.send_keys("renaissance")
+    login = browser.find_element_by_id('lnkLogin')
+    login.click()
+    sts = browser.find_element_by_partial_link_text("Check Admission Status")
+    sts.click()
+    reg = browser.find_element_by_id('MainContent_RegNumber')
+    reg.clear()
+    reg.send_keys('96503384CF')
+    access = browser.find_element_by_id('MainContent_btnCAPS')
+    access.click()
+    sts = browser.find_element_by_partial_link_text("Admission Status")
+    sts.click()
+    soup = BeautifulSoup(browser.page_source, 'html.parser')
+    res = soup.find_all("div","col-lg-6")
+    mm = res[4].text
+    
+    browser.get(results_url)
+    user = browser.find_element_by_id("email")
+    user.send_keys("ademorotis@gmail.com")
+    pas = browser.find_element_by_id("password")
+    pas.send_keys("renaissance")
+    login = browser.find_element_by_id('lnkLogin')
+    login.click()
+    sts = browser.find_element_by_partial_link_text("Check Admission Status")
+    sts.click()
+    reg = browser.find_element_by_id('MainContent_RegNumber')
+    reg.send_keys('99117852EB')
+    access = browser.find_element_by_id('MainContent_btnCAPS')
+    access.click()
+    sts = browser.find_element_by_partial_link_text("Admission Status")
+    sts.click()
+    soup = BeautifulSoup(browser.page_source, 'html.parser')
+    res = soup.find_all("div","col-lg-6")
+    kk = res[4].text
+    
+    # me == my email address
+    # you == recipient's email address
+    me =  "owoeyepo@gmail.com" 
+    to = 'Data Bot <oluwashaeyhoon@gmail.com>'
+    cc = ""
+    bcc = ""
+    
+    
+    
+    
+    
+    # Create message container - the correct MIME type is multipart/alternative.
+    rcpt = cc.split(",") + bcc.split(",") + [to]
+    msg = MIMEMultipart('alternative')
+    msg['Subject'] = kk
+    msg['From'] = me
+    msg['To'] = to
+    msg['Cc'] = cc
+    msg['Bcc'] = bcc
+    msg['Date'] = formatdate(localtime = True) 
+    
+    
+    
+    
+    #Define a function for local time to be embedded in the email body 
+    def today():
+        return formatdate(localtime=True)
+    text = "Swift"
+    html = """<html>
+    <body>
+    
+     <h1><p><img src="https://www.jamb.org.ng/images/banner.png" width="400" height="42"></P> </h1> 
+     <small><p>Here are the <b>JAMB CAPS details </b> for Today<br></small>
+      """ + today() + """
+       
+      <hr>
+      <br>
+      <p></P>  
+      """ + "<b>DE:</b> <i>" + kk + "</i>//// <b>UTME:</b> <i>" + mm + """</i></p>
+      <br>
+      
+      <hr>
+      
+      <br>
+    
+         
+      <br>
+    
+    
+     
+    <footer>
+      <p>Brewed by: <b>AutoCAPS</b></p>
+      <p>Contact information: <a href="autocaps.herokuapp.com">AutoCAPS.herokuapp.com</a>.</p>
+    </footer>
+    
+    <p><strong>Note:</strong> <kbd>Copyright 2018-2019 by AutoCAPS. All Rights Reserved..</kbd></p>
+    
+            
+      </body>
+    </html>
+    """
+    
+    
+    # Record the MIME types of both parts - text/plain and text/html.
+    part1 = MIMEText(text, 'plain')
+    part2 = MIMEText(html, 'html')
+    #part3 = MIMEImage(("C:\Ice Packs\data\myfig.jpeg").read())
+    
+    
+    
+    
+    
+    
+    # Attach parts into message container.
+    # According to RFC 2046, the last part of a multipart message, in this case
+    # the HTML message, is best and preferred.
+    msg.attach(part1)
+    msg.attach(part2)
+    #msg.attach(part3)
+    
+    # Send the message via local SMTP server.
+    s = smtplib.SMTP('smtp.gmail.com:587')
+    s.starttls() 
+    s.login(me, PESS)
+    # sendmail function takes 3 arguments: sender's address, recipient's address
+    # and message to send - here it is sent as one string.
+    s.sendmail(me, rcpt, msg.as_string())
+    s.quit()
+    
+    
+    # In[ ]:
+    dt.datetime.now().strftime("%d %B %Y")
+    
+if __name__ == '__main__':
+    mk = 0
+    while True:
+        app.run()
+        mk += 1
+        print(mk)
+        for i in range(60):
+            print(str(i) + "[sec]")
+            time.sleep(1)
