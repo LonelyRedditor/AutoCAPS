@@ -25,7 +25,7 @@ from email.mime.image import MIMEImage
 import os 
 app = Flask(__name__)
 
-chrome_options = Options()
+chrome_options = webdriver.ChromeOptions()
 chrome_options.binary_location = GOOGLE_CHROME_BIN
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--no-sandbox')
@@ -177,8 +177,4 @@ if __name__ == '__main__':
     mk = 0
     while True:
         app()
-        mk += 1
-        print(mk)
-        for i in range(60):
-            print(str(i) + "[sec]")
-            time.sleep(1)
+        time.sleep(60)
