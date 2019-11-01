@@ -1,12 +1,42 @@
 #Python libraries that we need to import for our bot
 import random
-from flask import Flask, request
-from pymessenger.bot import Bot
+from flask import Flask, requestimport sys
+from selenium import webdriver
+from bs4 import BeautifulSoup
+import requests
+import time
+import smtplib
+import datetime as dt
+# Import date for printing date
+from email.utils import formatdate
+import email
+import sys, csv
+from email.mime.multipart import MIMEMultipart
+# from email.MIMEText import MIMEText
+import email.encoders
+import email.mime.text
+import email.mime.base
+from email.encoders import encode_base64
+from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
 import os 
 app = Flask(__name__)
-ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
-VERIFY_TOKEN = os.environ['VERIFY_TOKEN']
-bot = Bot (ACCESS_TOKEN)
+
+CHR = os.environ["CHR"]
+sys.path.insert(0,CHR)
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+browser = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
+
+
+PASS = os.environ["PASS"]
+UMTE = os.environ["UMTE"]
+DRCT = os.environ["DRCT"]
+PESS = os.environ["PESS"]
 
 #We will receive messages that Facebook sends our bot at this endpoint 
 @app.route("/", methods=['GET', 'POST'])
@@ -14,9 +44,9 @@ def app():
     results_url = "https://www.jamb.org.ng/efacility_/Login"
     browser.get(results_url)
     user = browser.find_element_by_id("email")
-    user.send_keys("oluwashaeyhoon@gmail.com")
+    user.send_keys(UMTE)
     pas = browser.find_element_by_id("password")
-    pas.send_keys("renaissance")
+    pas.send_keys(PASS)
     login = browser.find_element_by_id('lnkLogin')
     login.click()
     sts = browser.find_element_by_partial_link_text("Check Admission Status")
@@ -34,9 +64,9 @@ def app():
     
     browser.get(results_url)
     user = browser.find_element_by_id("email")
-    user.send_keys("ademorotis@gmail.com")
+    user.send_keys(DRCT)
     pas = browser.find_element_by_id("password")
-    pas.send_keys("renaissance")
+    pas.send_keys(PASS)
     login = browser.find_element_by_id('lnkLogin')
     login.click()
     sts = browser.find_element_by_partial_link_text("Check Admission Status")
@@ -147,7 +177,7 @@ def app():
 if __name__ == '__main__':
     mk = 0
     while True:
-        app.run()
+        app()
         mk += 1
         print(mk)
         for i in range(60):
