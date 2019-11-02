@@ -42,7 +42,7 @@ PESS = os.environ["PESS"]
 
 #We will receive messages that Facebook sends our bot at this endpoint 
 @app.route("/", methods=['GET', 'POST'])
-def app():
+def logic():
     results_url = "https://www.jamb.org.ng/efacility_/Login"
     browser.get(results_url)
     user = browser.find_element_by_id("email")
@@ -175,9 +175,8 @@ def app():
     
     # In[ ]:
     dt.datetime.now().strftime("%d %B %Y")
-    
+    time.sleep(60)
+    logic()
 if __name__ == '__main__':
-    mk = 0
-    while True:
-        app()
-        time.sleep(60)
+    app.run()
+    
