@@ -25,6 +25,9 @@ from email.mime.image import MIMEImage
 import os 
 app = Flask(__name__)
 
+GOOGLE_CHROME_BIN = os.environ["GOOGLE_CHROME_BIN"]
+CHROMEDRIVER_PATH = os.environ["CHROMEDRIVER_PATH"]
+
 chrome_options = webdriver.ChromeOptions()
 chrome_options.binary_location = GOOGLE_CHROME_BIN
 chrome_options.add_argument('--disable-gpu')
