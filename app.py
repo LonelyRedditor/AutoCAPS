@@ -41,7 +41,7 @@ DRCT = os.environ["DRCT"]
 PESS = os.environ["PESS"]
 
 #We will receive messages that Facebook sends our bot at this endpoint 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/")
 def logic():
     results_url = "https://www.jamb.org.ng/efacility_/Login"
     browser.get(results_url)
